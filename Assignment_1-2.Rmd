@@ -1,0 +1,205 @@
+---
+title: "ADS506 Assignment 1.2 <Dataset name>"
+author: "Ravita Kartawinata"
+date: "`r Sys.Date()`"
+output:
+  word_document: default
+  html_document:
+    df_print: paged
+---
+
+**Assignment: Propose a Time Series Dataset for Your Final Project**
+
+**Objective**: A time series is a sequence of numerical data points in successive order, typically occurring at regular intervals in time. For this assignment, your goal is to propose a dataset that exhibits time series characteristics suitable for forecasting in the final project.
+
+**Characteristics of a Suitable Dataset**:
+
+1.  **Time Dependence**: The dataset should contain one or more variables that vary over time. The order of data points should be meaningful and chronological.
+
+2.  **Regular Intervals**: The dataset must be recorded at consistent and regular intervals (e.g., hourly, daily, monthly).
+
+3.  **Meaningful Fluctuations**: The data should show fluctuations, trends, or seasonality that could be explored and explained. These patterns should seem persistent and not purely random.
+
+4.  **Business or Research Value**: Forecasting future values based on the dataset should have potential business, research, or societal relevance. For instance, predicting product returns, traffic accidents, sales volumes, etc.
+
+5.  **Data Integrity**: While no dataset is perfect, strive to find sources that are reputable and ensure the data is as clean and reliable as possible.
+
+6.  **Dataset Size**: As a guideline, aim for a dataset that has at least 100 observations to ensure there's enough data to discern patterns and conduct meaningful analyses.
+
+**Suggested Data Sources**:
+
+-   UCI Machine Learning Repository
+
+-   Kaggle Datasets
+
+-   World Bank Data
+
+-   Google Dataset Search
+
+**Submission Requirements**:
+
+-   **Dataset Description**: Provide a brief description of your dataset, its source, and why you chose it.
+Stock Market Data (NASDAQ, NYSE, S&P500) dataset is obtained from Kaggle. It is a time series data in daily basis for all tickers from inception till 12/12/2022. It covers Low, Open, Volume, High, Close and Adjusted Close values. From the data we will be able to see the fluctuation and trend. 
+
+-   **Time Series Plot:** Create a reproducible time series plot with an appropriate title and axes labels (include code that shows the import, transformation and plotting).
+
+-   **Preliminary Observations**: Share any initial patterns or trends you observe in the data. This doesn't have to be detailed, just your first impressions.
+
+-   **Relevance**: Explain the potential value in forecasting this data, either in a business context, research scenario, or other relevance.
+
+\newpage
+
+
+```{r warning=FALSE, message=FALSE}
+library(tidyverse)
+library(fpp2)
+library(dplyr)
+library(ggplot2)
+```
+
+## Data Source
+
+Include public links to data if it is too large to upload (do not upload datasets larger than 50MB).
+https://www.kaggle.com/datasets/paultimothymooney/stock-market-data/data
+
+## Importing the Data
+
+```{r}
+# import the data
+amzn <- read_csv("C:/Users/rkartawi/Desktop/Ravita/MSADS/506/Mod1/1.2/nasdaq/csv/AMZN.csv")
+appl <- read_csv("C:/Users/rkartawi/Desktop/Ravita/MSADS/506/Mod1/1.2/nasdaq/csv/AAPL.csv")
+goog <- read_csv("C:/Users/rkartawi/Desktop/Ravita/MSADS/506/Mod1/1.2/sp500/csv/GOOG.csv")
+msft <- read_csv("C:/Users/rkartawi/Desktop/Ravita/MSADS/506/Mod1/1.2/nasdaq/csv/MSFT.csv")
+tsla <- read_csv("C:/Users/rkartawi/Desktop/Ravita/MSADS/506/Mod1/1.2/forbes2000/csv/TSLA.csv")
+
+# Semiconductor
+amd <- read_csv("C:/Users/rkartawi/Desktop/Ravita/MSADS/506/Mod1/1.2/nasdaq/csv/AMD.csv")
+avgo <- read_csv("C:/Users/rkartawi/Desktop/Ravita/MSADS/506/Mod1/1.2/forbes2000/csv/AVGO.csv")
+# mram <- read_csv("C:/Users/rkartawi/Desktop/Ravita/MSADS/506/Mod1/1.2/nasdaq/csv/MRAM.csv")
+nvda <- read_csv("C:/Users/rkartawi/Desktop/Ravita/MSADS/506/Mod1/1.2/nasdaq/csv/NVDA.csv")
+quik <- read_csv("C:/Users/rkartawi/Desktop/Ravita/MSADS/506/Mod1/1.2/nasdaq/csv/QUIK.csv")
+
+
+```
+
+```{r}
+# transform if necessary
+# ticker_list <- list(amd, avgo, nvda, quik)
+# ticker_list <- list(amzn, goog, appl,msft)
+# for (df in ticker_list) {
+#   
+#   df$Date <- as.Date(df$Date, format = "%d-%m-%Y")
+#   df <- df %>% mutate(YearMonth = format(Date, "%Y-%m"),
+#                       Year = format(Date, "%Y"),
+#                       Month = format(Date, "%m"))
+# }
+amzn$Date <- as.Date(amzn$Date, format = "%d-%m-%Y")
+appl$Date <- as.Date(appl$Date, format = "%d-%m-%Y")
+goog$Date <- as.Date(goog$Date, format = "%d-%m-%Y")
+msft$Date <- as.Date(msft$Date, format = "%d-%m-%Y")
+
+amzn <- amzn %>%  mutate(YearMonth = format(Date, "%Y-%m"),
+    Year = format(Date, "%Y"), Month = format(Date,"%m"))
+appl <- appl %>%  mutate(YearMonth = format(Date, "%Y-%m"),
+    Year = format(Date, "%Y"), Month = format(Date,"%m"))
+goog <- goog %>%  mutate(YearMonth = format(Date, "%Y-%m"),
+    Year = format(Date, "%Y"), Month = format(Date,"%m"))
+msft <- msft %>%  mutate(YearMonth = format(Date, "%Y-%m"),
+    Year = format(Date, "%Y"), Month = format(Date,"%m"))
+
+
+```
+
+## Time Series Plot
+
+```{r}
+
+ticker_list <- c('amzn', 'goog', 'appl','msft')
+data_column <- c("Open", "High", "Close", "Low", "Adjusted Close")
+
+# for (ticker in ticker_list) {
+#   for (col in data_column) {
+#     data <- get(ticker)
+#     ts_plot <- ggplot(data, aes(Date, !!sym(col))) +
+#       geom_line() +
+#       theme_classic() +
+#       labs(title = paste(ticker, "-", col))
+#     print(ts_plot)
+#   }
+# }
+```
+
+```{r}
+
+combined_data <- data.frame()
+
+for (ticker in ticker_list) {
+  data <- get(ticker)
+  data <- data.frame(
+    Date = data$Date,
+    Month = month(data$Date),
+    Year = year(data$Date),
+    YearMonth = data$YearMonth,
+    Ticker = ticker, 
+    Low = data$Low,
+    Open = data$Open,
+    Volume = data$Volume,
+    High = data$High,
+    Close = data$Close,
+    Adjusted_Close = data$`Adjusted Close`
+    )
+combined_data <- rbind(combined_data, data)
+}
+
+```
+
+```{r}
+# Create a combined line plot
+combined_plot <- ggplot(combined_data, aes(x = Date, y = Close, group = Ticker, color = Ticker)) +
+  geom_line() +
+  theme_classic() +
+  labs(title = "Combined Time Series Chart by Date - Close position")
+print(combined_plot)
+
+combined_data <- combined_data %>%
+  filter(as.numeric(Year) >= (max(as.numeric(Year)) - 8))
+
+combined_plot <- ggplot(combined_data, aes(x = YearMonth, y = Close, group = Ticker, color = Ticker)) +
+  geom_line() +
+  theme_classic() +
+  labs(title = "Combined Time Series Chart by YearMonth - Close position")+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+print(combined_plot)
+```
+## Discussion
+The time series data for the four technology stocks exhibited in the above plot shown a gradual increase until 2020. In that year, the rate of increase higher compared to previous years especially on MSFT, which would be the focus on this assignment. Since MSFT had a much higher spike, it might have another factor to be looked at outside of the existing data. 
+When we drilled the data to the monthly basis, it's worth to note that stock market time series data  has a high degree of fluctuation, making stock market prediction challenging.
+
+```{r}
+#Focus on MSFT; reshape to long view
+
+msft_long <- msft %>% 
+  select(Year, YearMonth, Date, Open, High, Close, Low, `Adjusted Close`) %>%
+  gather(key = "Variable", value = "Value", -Year, -YearMonth, -Date)
+ggplot(msft_long, aes(x= Year, y = Value, color = Variable, group = Variable)) +
+  geom_line(size = 1) +
+  labs(title = "Open, High, Close, and Low Over Time", x = "Year", y = "Value") +
+  theme_classic()+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+## Discussion
+At the beginning of the inception until 1997 and the last 5 years, the gap between Open and Adjusted Cost is quite significant compare to the gap in 1998 to 2018. 
+
+```{r}
+filter_data <- msft %>%
+  filter(as.numeric(Year) >= (max(as.numeric(Year)) - 8))
+msft_plot <- ggplot(filter_data, aes(x = Month, y = Close, group = Year, color = Year)) +
+  geom_line(size = 1) +
+  theme_classic() +
+  labs(title = "MSFT Time Series Chart by month - Close position")
+print(msft_plot)
+```
+## Discussion
+The plot above shows that there is no monthly pattern in MSFT stock market time series. As we can see although the stock price trends to go higher in each year, yet we can see a good plug in Sep 2022. 
+
+

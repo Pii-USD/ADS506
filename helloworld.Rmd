@@ -11,6 +11,8 @@ output: html_document
 
 ```{r}
 summary(iris)
+view(iris)
+
 ```
 
 ## Including Plots

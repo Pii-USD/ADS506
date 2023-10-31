@@ -32,3 +32,8 @@ ggplot(data = iris, aes(x=Sepal.Width, y=Sepal.Length, color = Species)) + geom_
 
 
 ```
+
+## Add cars library
+```{r}
+summary(cars)
+```

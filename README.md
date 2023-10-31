@@ -2,7 +2,7 @@
 This project is part of the ADS-506 course in the Applied Data Scient Program at the University of San Diego
 -- Project Status: Active
 
-# Instaforllation
+# Installation
 R will be used for the completion of the project and it's suggested to collaborate with GitHub. or Git. 
 
 # Introduction
